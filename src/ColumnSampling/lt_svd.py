@@ -29,7 +29,7 @@ def getLeftSingVec(sampled_mat, k):
     V, s, Vt = np.linalg.svd(np.dot(sampled_mat.transpose(), sampled_mat))
     left_sing_mat = np.zeros((sampled_mat.shape[0], k))
     for i in range(k):
-        left_sing_mat[:, i] = (np.dot(sampled_mat, V[:, i])) / s[i] 
+        left_sing_mat[:, i] = (np.dot(sampled_mat, V[:, i])) / np.sqrt(s[i]) 
     return left_sing_mat
 
 def truncSVD(imat, k):
