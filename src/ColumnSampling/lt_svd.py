@@ -50,8 +50,8 @@ def sampleRows(imat, r):
         rand_nos = np.random.random((1, r))[0]
         listcnt = 0
         pi = float(nr)/float(total)
-        if i <= 20:
-            print pi
+        #if i <= 20:
+        #    print pi
         for val in rand_nos:
             if val <= pi:
                 sampled_mat[listcnt, :] = row / (np.sqrt(r * pi))  
@@ -81,7 +81,7 @@ def validate(imat, sample_mat_rsv, rank_k, bound = 0):
 
 def main():
     parser = argparse.ArgumentParser(description = 'Read Matrix Data')
-    parser.add_argument('dataFile', nargs = '+', help = 'Enter complete path of Data File')
+    parser.add_argument('dataFile', help = 'Enter complete path of Data File')
     parser.add_argument('eps', help = 'Enter value for eps')
     parser.add_argument('beta', help = 'Enter value for beta')
     parser.add_argument('delta', help = 'Enter value for delta')
@@ -91,18 +91,18 @@ def main():
     args = parser.parse_args()
     eta = setEta(float(args.beta), float(args.delta))
     
-    data = pickle.load(open("input.data", 'rb')).transpose()
+    data = pickle.load(open(args.dataFile, 'rb')).transpose()
     rank_data = rank(data)
     k = 1
     if int(args.bound) == 1:
         k = int(args.rank)
     #r = setNoOfSamples(float(args.eps), k, eta, float(args.beta))
-    r = 100
+    r = 1428
     print 'r = ',r
     
     sample_mat = sampleRows(data, r)
     sample_mat_rsv = getRightSingVec(sample_mat, int(args.rank))    
-    validate(data, sample_mat_rsv, int(args.rank))
+    #validate(data, sample_mat_rsv, int(args.rank))
     cov_err = getCovErr(data, sample_mat)
     print 'cov_err in lt_svd = ', cov_err
 

@@ -1,11 +1,12 @@
 import numpy as np
+import pickle
 
 def rank(imat):
     return np.linalg.matrix_rank(imat)
 
 def generateData(m, n):
     rand_mat = np.random.random((m, n)) * np.random.randint(0, 1000)
-    pickle.dump(rn_mat, open('input.data', 'wb'))
+    pickle.dump(rand_mat, open('input.data', 'wb'))
     return rand_mat
 
 

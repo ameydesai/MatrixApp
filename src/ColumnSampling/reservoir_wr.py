@@ -1,4 +1,4 @@
-#This method does reservoir sampling without replacement on rows of input matrix.
+#This method does reservoir sampling WITH replacement on rows of input matrix.
 #This method is written based on the paper http://www.sciencedirect.com/science/article/pii/S002001900500298X#
 
 from common import *
@@ -45,19 +45,22 @@ def sampleRows(data, sample_size):
     nrows, ncols = data.shape
     sketch = np.zeros((sample_size, ncols))
     sketch = data[0 : sample_size, :]
-    fn = np.linalg.norm(sketch,'fro') ** 2
-    min_key, min_idx, keys = initThreshold(sketch, nrows)
-    rand_nos = np.random.random((sample_size, nrows))[0] #???
-  
+    rand_nos = np.random.random((1, sample_size))[0] 
+    keys = []
+    fn = np.linalg.norm(sketch, 'fro') ** 2
+    for i in range(sample_size):
+        key = getKey(data[i, :], rand_nos[i])
+        keys.append(key)
+
     for i in range(sample_size, nrows):
-        fn += np.linalg.norm(data[i,:]) ** 2
-        key = getKey(data[i,:],rand_nos[i])
-        if key > min_key:
-            sketch[min_idx,:] = data[i,:]
-            keys.remove(min_key)
-            keys.append(key)
-            min_key, min_idx = computeThreshold(keys)
- 
+        fn += np.linalg.norm(data[i, :]) ** 2
+        rand_nos = np.random.random((1, sample_size))[0] 
+        for j in range(sample_size):
+            key = getKey(data[i,:],rand_nos[j])
+            if key > keys[j]:
+                keys[j] = key
+                sketch[j,:] = data[i,:]
+                
     for i in range(sketch.shape[0]):
         row = sketch[i,:]
         row = row / np.linalg.norm(row)
